@@ -45,6 +45,7 @@ export const ScrollView = React.forwardRef<
       onContentSizeChange,
       children,
       refreshControl,
+      onScroll,
       ...rest
     },
     passRef
@@ -110,6 +111,16 @@ export const ScrollView = React.forwardRef<
     )
     const memoStyle = React.useMemo(() => [_style, style], [_style, style])
 
+    // Combine the onScroll prop with the scrollHandler
+    const combinedOnScroll = (event: any) => {
+      // Call the custom onScroll prop if it exists
+      if (onScroll) {
+        onScroll(event);
+      }
+      // Call the internal scrollHandler
+      scrollHandler(event);
+    };
+
     return (
       <ScrollViewMemo
         {...rest}
@@ -118,7 +129,7 @@ export const ScrollView = React.forwardRef<
         bouncesZoom={false}
         style={memoStyle}
         contentContainerStyle={memoContentContainerStyle}
-        onScroll={scrollHandler}
+        onScroll={combinedOnScroll}
         onContentSizeChange={scrollContentSizeChangeHandlers}
         scrollEventThrottle={16}
         contentInset={memoContentInset}
